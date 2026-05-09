@@ -190,6 +190,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
                                 value="<?php echo e(old('expected_audience')); ?>" min="1">
+                            <div class="form-text text-muted">Must be between 40% and 100% of the selected venue's capacity.</div>
                             <?php $__errorArgs = ['expected_audience'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -227,7 +228,7 @@ unset($__errorArgs, $__bag); ?>
                         <li>Event date must be in the future</li>
                         <li>Provide clear event description</li>
                         <li>Include budget if applicable</li>
-                        <li>Specify expected audience count</li>
+                        <li>Specify audience (40%-100% of venue capacity)</li>
                     </ul>
                     <hr>
                     <p class="mb-0 text-muted"><strong>Status:</strong> Your proposal will be submitted for advisor approval.</p>

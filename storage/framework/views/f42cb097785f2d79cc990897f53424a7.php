@@ -99,18 +99,18 @@
                                             <td><?php echo e($event->proposed_date->format('M d, Y')); ?></td>
                                             <td><span class="badge bg-warning text-dark">Pending</span></td>
                                             <td class="text-end pe-4">
-                                                <div class="btn-group" role="group">
+                                                <div class="d-flex justify-content-end gap-2">
                                                     <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-sm btn-outline-info" title="View Details">
-                                                        <i class="fas fa-eye"></i>
+                                                        <i class="fas fa-eye"></i> View
                                                     </a>
                                                     <form action="<?php echo e(route('events.approve', $event)); ?>" method="POST" class="d-inline">
                                                         <?php echo csrf_field(); ?>
                                                         <button type="submit" class="btn btn-sm btn-outline-success" title="Approve">
-                                                            <i class="fas fa-check"></i>
+                                                            <i class="fas fa-check"></i> Approve
                                                         </button>
                                                     </form>
                                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal<?php echo e($event->id); ?>" title="Reject">
-                                                        <i class="fas fa-times"></i>
+                                                        <i class="fas fa-times"></i> Reject
                                                     </button>
                                                 </div>
                                             </td>

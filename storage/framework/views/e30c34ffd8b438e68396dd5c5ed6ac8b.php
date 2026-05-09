@@ -72,8 +72,8 @@
     <div class="row mb-5">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0">Quick Actions</h5>
+                <div class="card-header py-3" style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                    <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-2">
@@ -124,11 +124,11 @@
         <!-- Clubs Management Section -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #eff6ff; border-bottom: 2px solid #dbeafe;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-users me-2 text-primary"></i>Your Clubs
                     </h5>
-                    <span class="badge bg-primary"><?php echo e($clubs->count()); ?></span>
+                    <span class="badge bg-primary rounded-pill px-3"><?php echo e($clubs->count()); ?></span>
                 </div>
                 <div class="card-body p-0">
                     <?php if($clubs->count() > 0): ?>
@@ -162,18 +162,18 @@
                                                 <span class="badge bg-success">Active</span>
                                             </td>
                                             <td class="text-center">
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <a href="<?php echo e(route('clubs.members', $club)); ?>" class="btn btn-outline-primary" title="View Members">
-                                                        <i class="fas fa-users"></i>
+                                                <div class="d-flex justify-content-center flex-wrap gap-2">
+                                                    <a href="<?php echo e(route('clubs.members', $club)); ?>" class="btn btn-sm btn-outline-primary" title="View Members">
+                                                        <i class="fas fa-users"></i> Members
                                                     </a>
-                                                    <a href="<?php echo e(route('clubs.applications', $club)); ?>" class="btn btn-outline-warning" title="Applications">
-                                                        <i class="fas fa-inbox"></i>
+                                                    <a href="<?php echo e(route('clubs.applications', $club)); ?>" class="btn btn-sm btn-outline-warning" title="Applications">
+                                                        <i class="fas fa-inbox"></i> Apps
                                                     </a>
-                                                    <a href="<?php echo e(route('clubs.members.download-pdf', $club)); ?>" class="btn btn-outline-success" title="Download PDF">
-                                                        <i class="fas fa-download"></i>
+                                                    <a href="<?php echo e(route('clubs.members.download-pdf', $club)); ?>" class="btn btn-sm btn-outline-success" title="Download PDF">
+                                                        <i class="fas fa-download"></i> PDF
                                                     </a>
-                                                    <a href="<?php echo e(route('clubs.show', $club)); ?>" class="btn btn-outline-secondary" title="View Details">
-                                                        <i class="fas fa-eye"></i>
+                                                    <a href="<?php echo e(route('clubs.show', $club)); ?>" class="btn btn-sm btn-outline-secondary" title="View Details">
+                                                        <i class="fas fa-eye"></i> View
                                                     </a>
                                                 </div>
                                             </td>
@@ -194,11 +194,11 @@
 
             <!-- Events Section -->
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #fff1f2; border-bottom: 2px solid #fecdd3;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-calendar-check me-2 text-danger"></i>Event Proposals
                     </h5>
-                    <span class="badge bg-danger"><?php echo e($proposedEventsCount); ?></span>
+                    <span class="badge bg-danger rounded-pill px-3"><?php echo e($proposedEventsCount); ?></span>
                 </div>
                 <div class="card-body p-0">
                     <?php if($proposedEvents->count() > 0): ?>
@@ -240,16 +240,16 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td class="text-center">
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-outline-info" title="View Event">
-                                                        <i class="fas fa-eye"></i>
+                                                <div class="d-flex justify-content-center flex-wrap gap-2">
+                                                    <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-sm btn-outline-info" title="View Event">
+                                                        <i class="fas fa-eye"></i> View
                                                     </a>
-                                                    <a href="<?php echo e(route('events.budget.show', $event)); ?>" class="btn btn-outline-success" title="Budget & Expenses">
-                                                        <i class="fas fa-money-bill-wave"></i>
+                                                    <a href="<?php echo e(route('events.budget.show', $event)); ?>" class="btn btn-sm btn-outline-success" title="Budget & Expenses">
+                                                        <i class="fas fa-money-bill-wave"></i> Budget
                                                     </a>
                                                     <?php if($event->status === 'approved'): ?>
-                                                        <a href="<?php echo e(route('attendance.show', $event)); ?>" class="btn btn-outline-primary" title="Manage Attendance">
-                                                            <i class="fas fa-users-check"></i>
+                                                        <a href="<?php echo e(route('attendance.show', $event)); ?>" class="btn btn-sm btn-outline-primary" title="Manage Attendance">
+                                                            <i class="fas fa-users-check"></i> Attendance
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>
@@ -274,8 +274,8 @@
         <div class="col-lg-4">
             <!-- Account Information -->
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3" style="background: #f0f9ff; border-bottom: 2px solid #bae6fd;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-user-circle me-2 text-info"></i>Account Information
                     </h5>
                 </div>
@@ -303,8 +303,8 @@
 
             <!-- Key Features -->
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3" style="background: #fffbeb; border-bottom: 2px solid #fef3c7;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-star me-2 text-warning"></i>Key Features
                     </h5>
                 </div>

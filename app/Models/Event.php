@@ -71,6 +71,11 @@ class Event extends Model
         return $this->hasMany(AdvisorEventNotification::class);
     }
 
+    public function registrations()
+    {
+        return $this->hasMany(\App\Models\EventRegistration::class);
+    }
+
     // Methods
     public function getTotalEstimatedBudgetAttribute()
     {
@@ -95,5 +100,10 @@ class Event extends Model
     public function getExpectedAttendanceAttribute()
     {
         return $this->attendances()->count();
+    }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(EventFeedback::class);
     }
 }

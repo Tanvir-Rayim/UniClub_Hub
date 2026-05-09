@@ -79,11 +79,7 @@
                         <li class="nav-item px-2">
                             <a class="nav-link" href="<?php echo e(route('clubs.index')); ?>">Clubs</a>
                         </li>
-                        <li class="nav-item px-2">
-                            <a class="nav-link" href="<?php echo e(route('attendance.pending')); ?>">
-                                <i class="fas fa-check-circle"></i> Mark Attendance
-                            </a>
-                        </li>
+
                         <?php if(Auth::user()->isAdvisor()): ?>
                             <li class="nav-item px-2">
                                 <a class="nav-link" href="<?php echo e(route('advisor.notifications.pending')); ?>">

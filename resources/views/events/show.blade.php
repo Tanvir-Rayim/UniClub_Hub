@@ -123,6 +123,48 @@
                     @endif
                 </div>
             </div>
+
+            @php
+                $canViewFeedback = auth()->user()->hasRole('admin') || auth()->user()->hasRole('executive') || auth()->user()->hasRole('advisor');
+                $feedbacks = $event->feedbacks()->latest()->get();
+                $avgRating = $feedbacks->avg('rating');
+            @endphp
+
+            @if($canViewFeedback && $event->proposed_date->isPast())
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Anonymous Student Feedback</h5>
+                    @if($feedbacks->count() > 0)
+                        <span class="badge bg-primary">
+                            <i class="fas fa-star me-1"></i> {{ number_format($avgRating, 1) }} / 5.0 ({{ $feedbacks->count() }} ratings)
+                        </span>
+                    @endif
+                </div>
+                <div class="card-body">
+                    @if($feedbacks->count() > 0)
+                        <ul class="list-group list-group-flush">
+                            @foreach($feedbacks as $feedback)
+                                <li class="list-group-item px-0 {{ $loop->last ? 'border-bottom-0 pb-0' : '' }}">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div class="text-warning">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="fas fa-star {{ $i <= $feedback->rating ? '' : 'text-muted opacity-25' }}"></i>
+                                            @endfor
+                                        </div>
+                                        <small class="text-muted">{{ $feedback->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    @if($feedback->feedback_text)
+                                        <p class="mb-0 text-muted fst-italic">"{{ $feedback->feedback_text }}"</p>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-muted mb-0">No feedback has been submitted for this event yet.</p>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
 
         <div class="col-md-4">
@@ -219,6 +261,67 @@
                                         <div class="mb-3">
                                             <label for="advisor_remarks_reject" class="form-label">Remarks / Rejection Reason</label>
                                             <textarea class="form-control" name="advisor_remarks" id="advisor_remarks_reject" rows="4" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger">Reject Proposal</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                    @endif
+
+                    @if ($isAdmin && $event->status === 'pending_approval' && $event->advisor_approval_status === 'approved')
+                    <hr>
+                    <h5 class="mb-3">Admin Final Review</h5>
+                    <!-- Review Actions -->
+                    <button type="button" class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#adminApproveModal">
+                        Approve Officially
+                    </button>
+                    <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#adminRejectModal">
+                        Reject
+                    </button>
+
+                    <!-- Admin Approve Modal -->
+                    <div class="modal fade" id="adminApproveModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <form action="{{ route('events.admin-approve', $event) }}" method="POST">
+                                @csrf
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Approve Event Proposal</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>This will officially approve the event and make it visible to students.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-success">Confirm Approval</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Admin Reject Modal -->
+                    <div class="modal fade" id="adminRejectModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <form action="{{ route('events.admin-reject', $event) }}" method="POST">
+                                @csrf
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Reject Event Proposal</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Please provide a reason for rejecting this event proposal.</p>
+                                        <div class="mb-3">
+                                            <label for="admin_rejection_reason" class="form-label">Rejection Reason</label>
+                                            <textarea class="form-control" name="rejection_reason" id="admin_rejection_reason" rows="4" required></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

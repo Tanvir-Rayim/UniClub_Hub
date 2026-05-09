@@ -5,25 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\AdvisorEventNotification;
 use App\Models\Club;
 use App\Models\Event;
+use App\Models\Venue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(); 
-        // Get clubs where user is assigned as executive
-        $assignedClubIds = $user->assignedClubs()->pluck('clubs.id');
-        
-        // Get all events from those clubs
-        $events = Event::whereIn('club_id', $assignedClubIds)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            // Admin sees ALL events across the entire system
+            $events = Event::with(['club', 'venue', 'creator'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // Executive sees only events from their assigned clubs
+            $assignedClubIds = $user->assignedClubs()->pluck('clubs.id');
+            $events = Event::whereIn('club_id', $assignedClubIds)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         return view('events.index', [
-            'events' => $events,
-            'eventCount' => $events->count()
+            'events'     => $events,
+            'eventCount' => $events->count(),
+            'isAdmin'    => $user->isAdmin(),
         ]);
     }
     public function create()
@@ -50,6 +59,24 @@ class EventController extends Controller
             'budget' => 'nullable|numeric|min:0',
             'expected_audience' => 'nullable|integer|min:1',
         ]);
+
+        // Venue capacity validation
+        if ($request->filled('venue_id')) {
+            $venue = Venue::findOrFail($request->venue_id);
+            $minCapacity = ceil($venue->capacity * 0.4);
+            $maxCapacity = $venue->capacity;
+            $audience = $request->expected_audience;
+
+            if (!$audience) {
+                return back()->withInput()->withErrors(['expected_audience' => 'Expected audience is required when a venue is selected.']);
+            }
+
+            if ($audience < $minCapacity || $audience > $maxCapacity) {
+                return back()->withInput()->withErrors([
+                    'expected_audience' => "For the selected venue ({$venue->name}), the expected audience must be between {$minCapacity} and {$maxCapacity} (40% to 100% of total capacity)."
+                ]);
+            }
+        }
 
         $user = Auth::user();
         
@@ -148,6 +175,24 @@ class EventController extends Controller
             'expected_audience' => 'nullable|integer|min:1',
         ]);
 
+        // Venue capacity validation
+        if ($request->filled('venue_id')) {
+            $venue = Venue::findOrFail($request->venue_id);
+            $minCapacity = ceil($venue->capacity * 0.4);
+            $maxCapacity = $venue->capacity;
+            $audience = $request->expected_audience;
+
+            if (!$audience) {
+                return back()->withInput()->withErrors(['expected_audience' => 'Expected audience is required when a venue is selected.']);
+            }
+
+            if ($audience < $minCapacity || $audience > $maxCapacity) {
+                return back()->withInput()->withErrors([
+                    'expected_audience' => "For the selected venue ({$venue->name}), the expected audience must be between {$minCapacity} and {$maxCapacity} (40% to 100% of total capacity)."
+                ]);
+            }
+        }
+
         // Verify user is assigned to the club
         $isAssignedToClub = $user->assignedClubs()
             ->where('club_id', $validated['club_id'])
@@ -223,5 +268,47 @@ class EventController extends Controller
         ]);
 
         return back()->with('success', 'Event proposal rejected.');
+    }
+
+    /**
+     * Admin final approval or rejection
+     */
+    public function adminApprove(Request $request, Event $event)
+    {
+        $user = Auth::user();
+
+        if (!$user->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if ($event->advisor_approval_status !== 'approved') {
+            return back()->with('error', 'Event must be approved by an advisor first.');
+        }
+
+        $event->update([
+            'status' => 'approved',
+        ]);
+
+        return back()->with('success', 'Event proposal has been officially approved!');
+    }
+
+    public function adminReject(Request $request, Event $event)
+    {
+        $user = Auth::user();
+
+        if (!$user->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'rejection_reason' => 'required|string'
+        ]);
+
+        $event->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['rejection_reason']
+        ]);
+
+        return back()->with('success', 'Event proposal has been rejected.');
     }
 }

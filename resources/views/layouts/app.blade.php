@@ -79,11 +79,7 @@
                         <li class="nav-item px-2">
                             <a class="nav-link" href="{{ route('clubs.index') }}">Clubs</a>
                         </li>
-                        <li class="nav-item px-2">
-                            <a class="nav-link" href="{{ route('attendance.pending') }}">
-                                <i class="fas fa-check-circle"></i> Mark Attendance
-                            </a>
-                        </li>
+
                         @if(Auth::user()->isAdvisor())
                             <li class="nav-item px-2">
                                 <a class="nav-link" href="{{ route('advisor.notifications.pending') }}">

@@ -79,6 +79,21 @@ class ClubController extends Controller
             return back()->with('error', 'Executives must be assigned to clubs by advisors.');
         }
 
+        // Enforce max 4 clubs per student
+        $currentMembershipCount = $user->clubs()
+            ->wherePivotIn('status', ['approved', 'pending'])
+            ->count();
+
+        if ($currentMembershipCount >= 4) {
+            return back()->with('error', 'You have reached the maximum limit of 4 clubs. Please leave a club before joining another.');
+        }
+
+        // Check if already a member or has a pending application
+        $existing = $user->clubs()->where('club_id', $club->id)->first();
+        if ($existing) {
+            return back()->with('error', 'You have already applied to or joined this club.');
+        }
+
         $club->members()->syncWithoutDetaching([
             $user->id => ['status' => 'pending']
         ]);

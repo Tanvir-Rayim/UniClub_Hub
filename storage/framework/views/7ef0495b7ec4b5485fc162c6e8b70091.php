@@ -1,9 +1,9 @@
-
-
 <?php $__env->startSection('title', 'Student Dashboard - UniClub Hub'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="container-fluid px-4 py-5">
+
+    
     <div class="row mb-5">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -11,9 +11,12 @@
                     <h1 class="display-5 fw-bold mb-1">Student Dashboard 🎓</h1>
                     <p class="text-muted fs-6">Welcome back, <?php echo e($user->name); ?>! Here is your campus life at a glance.</p>
                 </div>
-                <div class="text-end">
-                    <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-primary btn-lg mb-2 shadow-sm">
-                        <i class="fas fa-compass me-2"></i> Explore Clubs
+                <div class="text-end d-flex gap-2">
+                    <a href="<?php echo e(route('student.events.calendar')); ?>" class="btn btn-primary btn-lg shadow-sm">
+                        <i class="fas fa-calendar-alt me-2"></i>Upcoming Events
+                    </a>
+                    <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-outline-primary btn-lg shadow-sm">
+                        <i class="fas fa-compass me-2"></i>Explore Clubs
                     </a>
                 </div>
             </div>
@@ -21,45 +24,85 @@
         </div>
     </div>
 
+    
     <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #667eea;">
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100" style="border-top:4px solid #667eea; border-radius:14px;">
                 <div class="card-body text-center p-4">
-                    <div class="display-5 fw-bold text-primary mb-2"><?php echo e($clubCount); ?></div>
-                    <p class="text-muted mb-0 fw-500">Clubs Joined</p>
+                    <div class="display-5 fw-bold text-primary mb-1"><?php echo e($clubCount); ?></div>
+                    <p class="text-muted mb-0 fw-semibold">Clubs Joined</p>
                     <small class="text-muted">Active memberships</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #f5576c;">
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100" style="border-top:4px solid #f5576c; border-radius:14px;">
                 <div class="card-body text-center p-4">
-                    <div class="display-5 fw-bold text-danger mb-2"><?php echo e($pendingApplications); ?></div>
-                    <p class="text-muted mb-0 fw-500">Pending Applications</p>
+                    <div class="display-5 fw-bold text-danger mb-1"><?php echo e($pendingApplications); ?></div>
+                    <p class="text-muted mb-0 fw-semibold">Pending Applications</p>
                     <small class="text-muted">Awaiting club approval</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100" style="border-top:4px solid #43e97b; border-radius:14px;">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 fw-bold text-success mb-1"><?php echo e($registeredEvents); ?></div>
+                    <p class="text-muted mb-0 fw-semibold">Events Registered</p>
+                    <small class="text-muted">Active tickets held</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card border-0 shadow-sm h-100" style="border-top:4px solid #4facfe; border-radius:14px;">
+                <div class="card-body text-center p-4">
+                    <div class="display-5 fw-bold text-info mb-1"><?php echo e($upcomingRegistered); ?></div>
+                    <p class="text-muted mb-0 fw-semibold">Upcoming Attended</p>
+                    <small class="text-muted">Future events you'll attend</small>
                 </div>
             </div>
         </div>
     </div>
 
+    
+    <?php if($clubCount >= 4): ?>
+        <div class="alert alert-warning shadow-sm mb-4" style="border-radius:12px;">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Club Limit Reached:</strong> You are in <?php echo e($clubCount); ?>/4 clubs. Leave a club before applying to a new one.
+        </div>
+    <?php elseif($clubCount >= 3): ?>
+        <div class="alert alert-info shadow-sm mb-4" style="border-radius:12px;">
+            <i class="fas fa-info-circle me-2"></i>
+            You are in <?php echo e($clubCount); ?>/4 clubs — you can join <strong><?php echo e(4 - $clubCount); ?> more</strong>.
+        </div>
+    <?php endif; ?>
+
     <div class="row g-4">
+
+        
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-light border-bottom-0 py-3">
-                    <h5 class="mb-0">
+
+            
+            <div class="card border-0 shadow-sm mb-4" style="border-radius:16px; overflow:hidden;">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center"
+                     style="background:#fff; border-bottom:1px solid #eee;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-users text-primary me-2"></i>Your Clubs
+                        <span class="badge bg-primary ms-2"><?php echo e($clubCount); ?>/4</span>
                     </h5>
+                    <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-sm btn-outline-primary">Browse More</a>
                 </div>
                 <div class="card-body p-0">
                     <?php if($clubs->count() > 0): ?>
                         <div class="list-group list-group-flush">
                             <?php $__currentLoopData = $clubs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $club): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <a href="<?php echo e(route('clubs.show', $club)); ?>" class="list-group-item list-group-item-action p-4 border-bottom border-light">
-                                    <div class="d-flex w-100 justify-content-between align-items-center mb-2">
+                                <a href="<?php echo e(route('clubs.show', $club)); ?>"
+                                   class="list-group-item list-group-item-action p-4 border-bottom border-light">
+                                    <div class="d-flex w-100 justify-content-between align-items-center mb-1">
                                         <h6 class="mb-0 fw-bold text-dark"><?php echo e($club->name); ?></h6>
                                         <span class="badge bg-light text-secondary border">
                                             <i class="far fa-clock me-1"></i>
-                                            Joined <?php echo e($club->pivot->joined_at ? $club->pivot->joined_at->diffForHumans() : 'Recently'); ?>
+                                            Joined <?php echo e($club->pivot->joined_at ? \Carbon\Carbon::parse($club->pivot->joined_at)->diffForHumans() : 'Recently'); ?>
 
                                         </span>
                                     </div>
@@ -79,13 +122,59 @@
                     <?php endif; ?>
                 </div>
             </div>
+
+            
+            <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center"
+                     style="background: linear-gradient(135deg, #667eea, #764ba2); border:none;">
+                    <h5 class="mb-0 text-white fw-bold">
+                        <i class="fas fa-calendar-alt me-2"></i>Upcoming Events
+                    </h5>
+                    <a href="<?php echo e(route('student.events.calendar')); ?>" class="btn btn-sm btn-light text-primary fw-semibold">
+                        View All
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <?php if($upcomingEvents->count() > 0): ?>
+                        <?php $__currentLoopData = $upcomingEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="p-4 border-bottom border-light d-flex align-items-center gap-3">
+                                <div class="text-center flex-shrink-0"
+                                     style="width:52px; height:52px; background:linear-gradient(135deg,#667eea,#764ba2); border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                    <div class="text-white fw-bold" style="font-size:1rem; line-height:1;"><?php echo e($event->proposed_date->format('d')); ?></div>
+                                    <div class="text-white" style="font-size:0.65rem; line-height:1.2;"><?php echo e($event->proposed_date->format('M')); ?></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-bold"><?php echo e($event->title); ?></h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-users me-1"></i><?php echo e($event->club->name); ?>
+
+                                        &nbsp;·&nbsp;
+                                        <i class="fas fa-clock me-1"></i><?php echo e($event->proposed_date->diffForHumans()); ?>
+
+                                    </small>
+                                </div>
+                                <a href="<?php echo e(route('student.events.calendar')); ?>" class="btn btn-sm btn-outline-primary flex-shrink-0">
+                                    Join
+                                </a>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-calendar-times fa-2x mb-2 d-block"></i>
+                            No upcoming events right now.
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
 
+        
         <div class="col-lg-4">
+
             
-            <div class="card border-0 shadow-sm mb-4 bg-light">
-                <div class="card-header bg-transparent border-bottom-0 pt-4 pb-0">
-                    <h5 class="mb-0 text-dark">
+            <div class="card border-0 shadow-sm mb-4 bg-light" style="border-radius:16px;">
+                <div class="card-header py-3 bg-light" style="border-bottom: 2px solid #e2e8f0;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-id-card text-secondary me-2"></i>Account Info
                     </h5>
                 </div>
@@ -95,14 +184,14 @@
                             <small class="text-muted d-block mb-1">University ID</small>
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-hashtag text-secondary me-2"></i>
-                                <span class="fw-500"><?php echo e($user->university_id); ?></span>
+                                <span class="fw-semibold"><?php echo e($user->university_id); ?></span>
                             </div>
                         </li>
                         <li class="mb-3">
                             <small class="text-muted d-block mb-1">Email Address</small>
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-envelope text-secondary me-2"></i>
-                                <span class="fw-500"><?php echo e($user->email); ?></span>
+                                <span class="fw-semibold"><?php echo e($user->email); ?></span>
                             </div>
                         </li>
                         <li>
@@ -116,49 +205,49 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom-0 py-3">
-                    <h5 class="mb-0">
+            
+            <div class="card border-0 shadow-sm" style="border-radius:16px;">
+                <div class="card-header py-3" style="background: #fffbeb; border-bottom: 2px solid #fef3c7; border-radius: 16px 16px 0 0;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
                     </h5>
                 </div>
                 <div class="card-body p-3">
                     <div class="d-grid gap-2">
-                        <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-outline-primary text-start px-3 py-2">
-                            <i class="fas fa-search me-2" style="width: 20px;"></i> Browse Clubs
+                        <a href="<?php echo e(route('student.events.calendar')); ?>" class="btn btn-primary text-start px-3 py-2" style="border-radius:10px;">
+                            <i class="fas fa-calendar-alt me-2" style="width:20px;"></i>Upcoming Events
                         </a>
-                        <a href="<?php echo e(route('profile.show')); ?>" class="btn btn-outline-secondary text-start px-3 py-2">
-                            <i class="fas fa-user me-2" style="width: 20px;"></i> View Profile
+                        <a href="<?php echo e(route('student.tickets')); ?>" class="btn btn-outline-success text-start px-3 py-2" style="border-radius:10px;">
+                            <i class="fas fa-ticket-alt me-2" style="width:20px;"></i>My Tickets
+                            <?php if($registeredEvents > 0): ?>
+                                <span class="badge bg-success float-end"><?php echo e($registeredEvents); ?></span>
+                            <?php endif; ?>
                         </a>
-                        <a href="<?php echo e(route('profile.edit')); ?>" class="btn btn-outline-secondary text-start px-3 py-2">
-                            <i class="fas fa-user-edit me-2" style="width: 20px;"></i> Edit Profile
+                        <a href="<?php echo e(route('attendance.pending')); ?>" class="btn btn-outline-info text-start px-3 py-2" style="border-radius:10px;">
+                            <i class="fas fa-check-circle me-2" style="width:20px;"></i>Mark Attendance
+                        </a>
+                        <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-outline-primary text-start px-3 py-2" style="border-radius:10px;">
+                            <i class="fas fa-search me-2" style="width:20px;"></i>Browse Clubs
+                        </a>
+                        <a href="<?php echo e(route('profile.show')); ?>" class="btn btn-outline-secondary text-start px-3 py-2" style="border-radius:10px;">
+                            <i class="fas fa-user me-2" style="width:20px;"></i>View Profile
+                        </a>
+                        <a href="<?php echo e(route('profile.edit')); ?>" class="btn btn-outline-secondary text-start px-3 py-2" style="border-radius:10px;">
+                            <i class="fas fa-user-edit me-2" style="width:20px;"></i>Edit Profile
                         </a>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
 <style>
-    .fw-500 {
-        font-weight: 500;
-    }
-    .card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    }
-    .list-group-item-action {
-        transition: background-color 0.2s ease-in-out;
-    }
-    .list-group-item-action:hover {
-        background-color: #f8f9fa;
-        z-index: 1; /* Prevents border overlap issues on hover */
-    }
+    .fw-500 { font-weight: 500; }
+    .card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.12) !important; }
+    .list-group-item-action { transition: background-color 0.15s; }
+    .list-group-item-action:hover { background-color: #f0f4ff; }
 </style>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\ASUS\Documents\CSE470\UniClubHub\resources\views/dashboards/student.blade.php ENDPATH**/ ?>

@@ -55,8 +55,11 @@
             <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #43e97b;">
                 <div class="card-body text-center">
                     <div class="display-5 fw-bold text-success mb-2"><?php echo e($totalEvents); ?></div>
-                    <p class="text-muted mb-0">Events</p>
-                    <small class="text-muted">Proposed and approved</small>
+                    <p class="text-muted mb-0">Total Events</p>
+                    <small class="text-muted">
+                        <span class="badge bg-warning text-dark"><?php echo e($pendingProposalsCount); ?> pending</span>
+                        <span class="badge bg-success"><?php echo e($advisorApprovedCount); ?> approved</span>
+                    </small>
                 </div>
             </div>
         </div>
@@ -66,8 +69,8 @@
     <div class="row mb-5">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
+                <div class="card-header py-3" style="background: #f8f9fa; border-bottom: 2px solid #eee;">
+                    <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-bolt me-2 text-warning"></i>Quick Actions</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-2">
@@ -93,6 +96,9 @@
                             <a href="<?php echo e(route('events.index')); ?>" class="btn btn-outline-danger w-100 py-2">
                                 <i class="fas fa-calendar-alt me-2"></i>
                                 <span class="d-block small">All Events</span>
+                                <?php if($pendingProposalsCount > 0): ?>
+                                    <span class="badge bg-warning text-dark"><?php echo e($pendingProposalsCount); ?> pending</span>
+                                <?php endif; ?>
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
@@ -118,8 +124,8 @@
         <!-- Management Section -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #eef2ff; border-bottom: 2px solid #e2e8f0;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-chart-bar me-2 text-primary"></i>System Statistics
                     </h5>
                 </div>
@@ -164,8 +170,8 @@
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="card border-0 shadow-sm h-100">
-                        <div class="card-header bg-light border-bottom-0">
-                            <h5 class="mb-0"><i class="fas fa-users me-2 text-info"></i>Club Management</h5>
+                        <div class="card-header py-3" style="background: #f0f9ff; border-bottom: 2px solid #bae6fd;">
+                            <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-users me-2 text-info"></i>Club Management</h5>
                         </div>
                         <div class="card-body text-center py-4">
                             <i class="fas fa-users-class text-muted mb-3" style="font-size: 3rem;"></i>
@@ -179,8 +185,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card border-0 shadow-sm h-100">
-                        <div class="card-header bg-light border-bottom-0">
-                            <h5 class="mb-0"><i class="fas fa-user-shield me-2 text-danger"></i>User Management</h5>
+                        <div class="card-header py-3" style="background: #fff1f2; border-bottom: 2px solid #fecdd3;">
+                            <h5 class="mb-0 text-dark fw-bold"><i class="fas fa-user-shield me-2 text-danger"></i>User Management</h5>
                         </div>
                         <div class="card-body text-center py-4">
                             <i class="fas fa-id-card text-muted mb-3" style="font-size: 3rem;"></i>
@@ -194,12 +200,109 @@
             </div>
         </div>
 
+        
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4" style="border-left: 4px solid #f5a623;">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #f5a623, #f7c26b); border-bottom: none;">
+                    <h5 class="mb-0 text-white fw-bold">
+                        <i class="fas fa-hourglass-half me-2"></i>Pending Event Proposals
+                        <span class="badge bg-white text-warning ms-2"><?php echo e($pendingProposalsCount); ?></span>
+                    </h5>
+                    <a href="<?php echo e(route('events.index')); ?>" class="btn btn-sm btn-light text-warning fw-semibold">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <?php if($pendingProposals->count() > 0): ?>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Event</th>
+                                        <th>Club</th>
+                                        <th>Submitted By</th>
+                                        <th>Proposed Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $__currentLoopData = $pendingProposals; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td class="ps-3"><strong><?php echo e($event->title); ?></strong></td>
+                                            <td><span class="badge bg-info text-dark"><?php echo e($event->club->name); ?></span></td>
+                                            <td><?php echo e($event->creator->name ?? '—'); ?></td>
+                                            <td><?php echo e($event->proposed_date->format('M d, Y')); ?></td>
+                                            <td>
+                                                <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                            <p class="mb-0">No pending event proposals.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            
+            <div class="card border-0 shadow-sm mb-4" style="border-left: 4px solid #43e97b;">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #43e97b, #38f9d7); border-bottom: none;">
+                    <h5 class="mb-0 text-white fw-bold">
+                        <i class="fas fa-check-circle me-2"></i>Advisor-Approved Events
+                        <span class="badge bg-white text-success ms-2"><?php echo e($advisorApprovedCount); ?></span>
+                    </h5>
+                    <a href="<?php echo e(route('events.index')); ?>" class="btn btn-sm btn-light text-success fw-semibold">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <?php if($advisorApprovedEvents->count() > 0): ?>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Event</th>
+                                        <th>Club</th>
+                                        <th>Submitted By</th>
+                                        <th>Event Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $__currentLoopData = $advisorApprovedEvents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td class="ps-3"><strong><?php echo e($event->title); ?></strong></td>
+                                            <td><span class="badge bg-info text-dark"><?php echo e($event->club->name); ?></span></td>
+                                            <td><?php echo e($event->creator->name ?? '—'); ?></td>
+                                            <td><?php echo e($event->proposed_date->format('M d, Y')); ?></td>
+                                            <td>
+                                                <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-sm btn-outline-success">View</a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-calendar-times text-muted fa-2x mb-2"></i>
+                            <p class="mb-0">No advisor-approved events yet.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
         <!-- Sidebar: Info & Capabilities -->
+
         <div class="col-lg-4">
             <!-- Account Information -->
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3" style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-user-circle me-2 text-primary"></i>Admin Identity
                     </h5>
                 </div>
@@ -227,8 +330,8 @@
 
             <!-- Key Features -->
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3" style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-cogs me-2 text-secondary"></i>Admin Capabilities
                     </h5>
                 </div>

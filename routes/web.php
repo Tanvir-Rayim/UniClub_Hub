@@ -9,6 +9,7 @@ use App\Http\Controllers\ClubExecutiveController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentEventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/advisor', [DashboardController::class, 'advisorDashboard'])->name('advisor.dashboard')->middleware('role:advisor,admin');
     Route::get('/dashboard/admin', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard')->middleware('role:admin');
 
+    // Student Event Routes
+    Route::middleware('role:student')->group(function () {
+        Route::get('/events/calendar', [StudentEventController::class, 'calendar'])->name('student.events.calendar');
+        Route::post('/events/{event}/register', [StudentEventController::class, 'register'])->name('student.events.register');
+        Route::get('/my-tickets', [StudentEventController::class, 'myTickets'])->name('student.tickets');
+        Route::post('/tickets/{registration}/cancel', [StudentEventController::class, 'cancel'])->name('student.tickets.cancel');
+        
+        // Event Feedback
+        Route::post('/events/{event}/feedback', [\App\Http\Controllers\FeedbackController::class, 'store'])->name('events.feedback.store');
+    });
+
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -62,6 +74,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/clubs', [ClubController::class, 'store'])->name('clubs.store');
         Route::get('/clubs/{club}/edit', [ClubController::class, 'edit'])->name('clubs.edit');
         Route::put('/clubs/{club}', [ClubController::class, 'update'])->name('clubs.update');
+        
+        // Admin Event Approval
+        Route::post('/events/{event}/admin-approve', [EventController::class, 'adminApprove'])->name('events.admin-approve');
+        Route::post('/events/{event}/admin-reject', [EventController::class, 'adminReject'])->name('events.admin-reject');
     });
 
     // Club Routes

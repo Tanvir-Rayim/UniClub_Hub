@@ -35,7 +35,9 @@ class User extends Authenticatable
     // Relationships
     public function clubs()
     {
-        return $this->belongsToMany(Club::class, 'club_members', 'user_id', 'club_id');
+        return $this->belongsToMany(Club::class, 'club_members', 'user_id', 'club_id')
+                    ->withPivot('status', 'joined_at', 'position')
+                    ->withTimestamps();
     }
 
     public function advisedClubs()
@@ -85,5 +87,10 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(EventFeedback::class);
     }
 }

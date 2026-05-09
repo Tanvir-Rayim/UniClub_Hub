@@ -109,23 +109,25 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-warning edit-budget-btn" 
-                                                    data-id="{{ $item->id }}"
-                                                    data-description="{{ $item->item_description }}"
-                                                    data-estimated="{{ $item->estimated_amount }}"
-                                                    data-actual="{{ $item->actual_amount }}"
-                                                    data-notes="{{ $item->notes }}"
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#editBudgetModal">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form method="POST" action="{{ route('events.budget.delete', [$event, $item]) }}" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this budget item?');">
-                                                        <i class="fas fa-trash"></i>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-warning edit-budget-btn" 
+                                                        data-id="{{ $item->id }}"
+                                                        data-description="{{ $item->item_description }}"
+                                                        data-estimated="{{ $item->estimated_amount }}"
+                                                        data-actual="{{ $item->actual_amount }}"
+                                                        data-notes="{{ $item->notes }}"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editBudgetModal">
+                                                        <i class="fas fa-edit"></i> Edit
                                                     </button>
-                                                </form>
+                                                    <form method="POST" action="{{ route('events.budget.delete', [$event, $item]) }}" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this budget item?');">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -182,18 +184,20 @@
                                             </td>
                                             <td>{{ $proof->created_at->format('M d, Y') }}</td>
                                             <td>
-                                                <a href="{{ route('events.expenses.download', [$event, $proof]) }}" 
-                                                    class="btn btn-sm btn-info" 
-                                                    title="Download">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                                <form method="POST" action="{{ route('events.expenses.delete', [$event, $proof]) }}" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this proof?');">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <div class="d-flex gap-2">
+                                                    <a href="{{ route('events.expenses.download', [$event, $proof]) }}" 
+                                                        class="btn btn-sm btn-info" 
+                                                        title="Download">
+                                                        <i class="fas fa-download"></i> Download
+                                                    </a>
+                                                    <form method="POST" action="{{ route('events.expenses.delete', [$event, $proof]) }}" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this proof?');">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

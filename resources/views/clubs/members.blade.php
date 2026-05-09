@@ -75,16 +75,18 @@
                                     </td>
                                     @if ($canEditMembers)
                                         <td>
-                                            <a href="{{ route('clubs.members.edit', [$club, $member]) }}" class="btn btn-sm btn-warning" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form method="POST" action="{{ route('clubs.members.remove', [$club, $member]) }}" style="display:inline;" class="delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Remove" onclick="return confirm('Are you sure you want to remove this member?');">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('clubs.members.edit', [$club, $member]) }}" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form method="POST" action="{{ route('clubs.members.remove', [$club, $member]) }}" style="display:inline;" class="delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Remove" onclick="return confirm('Are you sure you want to remove this member?');">
+                                                        <i class="fas fa-trash"></i> Remove
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     @endif
                                 </tr>

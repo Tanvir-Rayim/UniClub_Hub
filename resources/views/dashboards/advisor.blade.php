@@ -67,8 +67,8 @@
         <div class="col-lg-8">
             
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #fffbeb; border-bottom: 2px solid #fef3c7;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-calendar-check me-2 text-warning"></i>Event Proposals
                     </h5>
                     @if($pendingEventsCount > 0)
@@ -99,18 +99,18 @@
                                             <td>{{ $event->proposed_date->format('M d, Y') }}</td>
                                             <td><span class="badge bg-warning text-dark">Pending</span></td>
                                             <td class="text-end pe-4">
-                                                <div class="btn-group" role="group">
+                                                <div class="d-flex justify-content-end gap-2">
                                                     <a href="{{ route('events.show', $event) }}" class="btn btn-sm btn-outline-info" title="View Details">
-                                                        <i class="fas fa-eye"></i>
+                                                        <i class="fas fa-eye"></i> View
                                                     </a>
                                                     <form action="{{ route('events.approve', $event) }}" method="POST" class="d-inline">
                                                         @csrf
                                                         <button type="submit" class="btn btn-sm btn-outline-success" title="Approve">
-                                                            <i class="fas fa-check"></i>
+                                                            <i class="fas fa-check"></i> Approve
                                                         </button>
                                                     </form>
                                                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $event->id }}" title="Reject">
-                                                        <i class="fas fa-times"></i>
+                                                        <i class="fas fa-times"></i> Reject
                                                     </button>
                                                 </div>
                                             </td>
@@ -155,8 +155,8 @@
             </div>
 
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light border-bottom-0">
-                    <h5 class="mb-0">
+                <div class="card-header py-3" style="background: #eff6ff; border-bottom: 2px solid #dbeafe;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-users me-2 text-primary"></i>Clubs Under Your Supervision
                     </h5>
                 </div>
@@ -215,8 +215,8 @@
             @endphp
             
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-warning bg-opacity-10 border-bottom-0 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-dark">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #fff7ed; border-bottom: 2px solid #ffedd5;">
+                    <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-bell text-warning me-2"></i> Recent Alerts
                     </h5>
                     @if($pendingNotifications->count() > 0)

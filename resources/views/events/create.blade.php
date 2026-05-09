@@ -98,6 +98,7 @@
                             <input type="number" name="expected_audience" id="expected_audience" 
                                 class="form-control @error('expected_audience') is-invalid @enderror" 
                                 value="{{ old('expected_audience') }}" min="1">
+                            <div class="form-text text-muted">Must be between 40% and 100% of the selected venue's capacity.</div>
                             @error('expected_audience')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -128,7 +129,7 @@
                         <li>Event date must be in the future</li>
                         <li>Provide clear event description</li>
                         <li>Include budget if applicable</li>
-                        <li>Specify expected audience count</li>
+                        <li>Specify audience (40%-100% of venue capacity)</li>
                     </ul>
                     <hr>
                     <p class="mb-0 text-muted"><strong>Status:</strong> Your proposal will be submitted for advisor approval.</p>
