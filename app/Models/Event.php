@@ -22,12 +22,16 @@ class Event extends Model
         'advisor_approval_status',
         'advisor_remarks',
         'rejection_reason',
+        'financial_release_status',
+        'financial_released_at',
         'created_by'
     ];
 
     protected $casts = [
         'proposed_date' => 'datetime',
         'budget' => 'float',
+        'financial_release_status' => 'boolean',
+        'financial_released_at' => 'datetime',
     ];
 
     // Relationships

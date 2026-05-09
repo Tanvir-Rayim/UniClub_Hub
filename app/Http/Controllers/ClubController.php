@@ -63,9 +63,15 @@ class ClubController extends Controller
     }
 
     // List all clubs
-    public function index()
+    public function index(Request $request)
     {
-        $clubs = Club::where('is_active', true)->paginate(15);
+        $query = Club::where('is_active', true);
+
+        if ($request->filled('search')) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%');
+        }
+
+        $clubs = $query->latest()->paginate(15);
         return view('clubs.index', ['clubs' => $clubs]);
     }
 

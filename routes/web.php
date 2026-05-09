@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
         // Admin Event Approval
         Route::post('/events/{event}/admin-approve', [EventController::class, 'adminApprove'])->name('events.admin-approve');
         Route::post('/events/{event}/admin-reject', [EventController::class, 'adminReject'])->name('events.admin-reject');
+        Route::get('/financial-summary', [BudgetController::class, 'adminSummary'])->name('admin.financial-summary');
     });
 
     // Club Routes
@@ -104,6 +105,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/clubs/{club}/executives/{user}', [ClubExecutiveController::class, 'remove'])->name('clubs.executives.remove');
         Route::post('/events/{event}/approve', [EventController::class, 'approve'])->name('events.approve');
         Route::post('/events/{event}/reject', [EventController::class, 'reject'])->name('events.reject');
+        Route::post('/events/{event}/release-financials', [BudgetController::class, 'releaseFinancials'])->name('events.budget.release');
         
         // Advisor notifications
         Route::get('/advisor/notifications', [AdvisorNotificationController::class, 'index'])->name('advisor.notifications.index');

@@ -5,7 +5,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-10">
             <div class="text-center py-5">
                 <h1 class="display-4 fw-bold mb-4">Welcome to UniClub Hub</h1>
                 <p class="lead text-muted mb-4">
@@ -14,7 +14,7 @@
                 <p class="mb-5">
                     Manage your clubs, events, budgets, and memberships all in one place.
                 </p>
-
+ 
                 <?php if(auth()->guard()->guest()): ?>
                     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                         <a href="<?php echo e(route('register')); ?>" class="btn btn-primary btn-lg px-4 gap-3">
@@ -30,29 +30,37 @@
                     </a>
                 <?php endif; ?>
             </div>
-
+ 
             <div class="row mt-5">
-                <div class="col-md-4 text-center mb-4">
-                    <div class="card">
+                <div class="col-md-3 text-center mb-4">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="card-body">
                             <h5 class="card-title">📚 For Students</h5>
-                            <p class="card-text">Join clubs, register for events, and connect with peers.</p>
+                            <p class="card-text small text-muted">Join clubs, register for events, and connect with peers.</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 text-center mb-4">
-                    <div class="card">
+                <div class="col-md-3 text-center mb-4">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="card-body">
                             <h5 class="card-title">🎯 For Executives</h5>
-                            <p class="card-text">Manage members, propose events, and handle budgets.</p>
+                            <p class="card-text small text-muted">Manage members, propose events, and handle budgets.</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 text-center mb-4">
-                    <div class="card">
+                <div class="col-md-3 text-center mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">⚖️ For Advisors</h5>
+                            <p class="card-text small text-muted">Supervise clubs, approve events, and release funds.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center mb-4">
+                    <div class="card h-100 shadow-sm border-0">
                         <div class="card-body">
                             <h5 class="card-title">👨‍💼 For Admins</h5>
-                            <p class="card-text">Oversee clubs, manage approvals, and allocate venues.</p>
+                            <p class="card-text small text-muted">Oversee clubs, manage approvals, and allocate venues.</p>
                         </div>
                     </div>
                 </div>

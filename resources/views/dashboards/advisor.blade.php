@@ -152,13 +152,68 @@
                         </div>
                     @endif
                 </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #ecfdf5; border-bottom: 2px solid #d1fae5;">
+                    <h5 class="mb-0 text-dark fw-bold">
+                        <i class="fas fa-money-bill-wave me-2 text-success"></i>Financial Releases
+                    </h5>
+                    @if($approvedEventsCount > 0)
+                        <span class="badge bg-success rounded-pill px-3">{{ $approvedEventsCount }} Action Required</span>
+                    @endif
+                </div>
+                <div class="card-body p-0">
+                    @if ($approvedEvents->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Event</th>
+                                        <th>Club</th>
+                                        <th>Budget</th>
+                                        <th class="text-end pe-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($approvedEvents as $event)
+                                        <tr>
+                                            <td class="ps-4">
+                                                <strong>{{ $event->title }}</strong>
+                                                <div class="small text-muted">{{ $event->proposed_date->format('M d, Y') }}</div>
+                                            </td>
+                                            <td>{{ $event->club->name }}</td>
+                                            <td>${{ number_format($event->budget, 2) }}</td>
+                                            <td class="text-end pe-4">
+                                                <form action="{{ route('events.budget.release', $event) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-hand-holding-usd me-1"></i> Release Funds
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <p class="text-muted mb-0">No approved events awaiting financial release.</p>
+                        </div>
+                    @endif
+                </div>
             </div>
 
             <div class="card border-0 shadow-sm">
-                <div class="card-header py-3" style="background: #eff6ff; border-bottom: 2px solid #dbeafe;">
+                <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center gap-3" style="background: #eff6ff; border-bottom: 2px solid #dbeafe;">
                     <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-users me-2 text-primary"></i>Clubs Under Your Supervision
                     </h5>
+                    <div class="ms-auto" style="min-width: 250px;">
+                        <div class="input-group input-group-sm shadow-sm">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-filter text-primary"></i></span>
+                            <input type="text" id="clubSearch" class="form-control border-start-0" placeholder="Filter clubs by name...">
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     @if ($clubs->count() > 0)
@@ -291,4 +346,21 @@
         background-color: #f8f9fa;
     }
 </style>
+@section('scripts')
+<script>
+    document.getElementById('clubSearch').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('table tbody tr');
+        
+        rows.forEach(row => {
+            let clubName = row.querySelector('td:first-child strong').textContent.toLowerCase();
+            if (clubName.includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
+@endsection
 @endsection

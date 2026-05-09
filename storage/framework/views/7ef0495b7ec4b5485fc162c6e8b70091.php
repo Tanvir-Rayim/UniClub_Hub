@@ -84,13 +84,21 @@
 
             
             <div class="card border-0 shadow-sm mb-4" style="border-radius:16px; overflow:hidden;">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center"
+                <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center gap-3"
                      style="background:#fff; border-bottom:1px solid #eee;">
                     <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-users text-primary me-2"></i>Your Clubs
                         <span class="badge bg-primary ms-2"><?php echo e($clubCount); ?>/4</span>
                     </h5>
-                    <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-sm btn-outline-primary">Browse More</a>
+                    <div class="flex-grow-1 mx-lg-4">
+                        <form action="<?php echo e(route('clubs.index')); ?>" method="GET" class="d-flex shadow-sm" style="border-radius: 8px; overflow: hidden;">
+                            <input type="text" name="search" class="form-control form-control-sm border-0" placeholder="Search clubs..." style="background: #f8f9fa;">
+                            <button type="submit" class="btn btn-sm btn-primary px-3 border-0">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-sm btn-outline-primary">Browse All</a>
                 </div>
                 <div class="card-body p-0">
                     <?php if($clubs->count() > 0): ?>

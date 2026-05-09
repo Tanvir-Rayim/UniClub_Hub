@@ -114,23 +114,25 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-warning edit-budget-btn" 
-                                                    data-id="<?php echo e($item->id); ?>"
-                                                    data-description="<?php echo e($item->item_description); ?>"
-                                                    data-estimated="<?php echo e($item->estimated_amount); ?>"
-                                                    data-actual="<?php echo e($item->actual_amount); ?>"
-                                                    data-notes="<?php echo e($item->notes); ?>"
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#editBudgetModal">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form method="POST" action="<?php echo e(route('events.budget.delete', [$event, $item])); ?>" style="display:inline;">
-                                                    <?php echo csrf_field(); ?>
-                                                    <?php echo method_field('DELETE'); ?>
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this budget item?');">
-                                                        <i class="fas fa-trash"></i>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-warning edit-budget-btn" 
+                                                        data-id="<?php echo e($item->id); ?>"
+                                                        data-description="<?php echo e($item->item_description); ?>"
+                                                        data-estimated="<?php echo e($item->estimated_amount); ?>"
+                                                        data-actual="<?php echo e($item->actual_amount); ?>"
+                                                        data-notes="<?php echo e($item->notes); ?>"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editBudgetModal">
+                                                        <i class="fas fa-edit"></i> Edit
                                                     </button>
-                                                </form>
+                                                    <form method="POST" action="<?php echo e(route('events.budget.delete', [$event, $item])); ?>" style="display:inline;">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this budget item?');">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -188,18 +190,20 @@
                                             </td>
                                             <td><?php echo e($proof->created_at->format('M d, Y')); ?></td>
                                             <td>
-                                                <a href="<?php echo e(route('events.expenses.download', [$event, $proof])); ?>" 
-                                                    class="btn btn-sm btn-info" 
-                                                    title="Download">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                                <form method="POST" action="<?php echo e(route('events.expenses.delete', [$event, $proof])); ?>" style="display:inline;">
-                                                    <?php echo csrf_field(); ?>
-                                                    <?php echo method_field('DELETE'); ?>
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this proof?');">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <div class="d-flex gap-2">
+                                                    <a href="<?php echo e(route('events.expenses.download', [$event, $proof])); ?>" 
+                                                        class="btn btn-sm btn-info" 
+                                                        title="Download">
+                                                        <i class="fas fa-download"></i> Download
+                                                    </a>
+                                                    <form method="POST" action="<?php echo e(route('events.expenses.delete', [$event, $proof])); ?>" style="display:inline;">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this proof?');">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

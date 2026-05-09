@@ -92,12 +92,21 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Get approved events awaiting financial release
+        $approvedEvents = \App\Models\Event::whereIn('club_id', $advisedClubs->pluck('id'))
+            ->where('status', 'approved')
+            ->where('financial_release_status', false)
+            ->orderBy('proposed_date', 'asc')
+            ->get();
+
         return view('dashboards.advisor', [
             'user' => $user,
             'clubs' => $advisedClubs,
             'clubCount' => $advisedClubs->count(),
             'pendingEvents' => $pendingEvents,
-            'pendingEventsCount' => $pendingEvents->count()
+            'pendingEventsCount' => $pendingEvents->count(),
+            'approvedEvents' => $approvedEvents,
+            'approvedEventsCount' => $approvedEvents->count()
         ]);
     }
 
@@ -124,6 +133,11 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // Financial Stats
+        $totalApprovedBudget = \App\Models\Event::where('status', 'approved')->sum('budget');
+        $totalReleasedBudget = \App\Models\Event::where('financial_release_status', true)->sum('budget');
+        $pendingReleaseCount = \App\Models\Event::where('status', 'approved')->where('financial_release_status', false)->count();
+ 
         return view('dashboards.admin', [
             'totalUsers'            => $totalUsers,
             'totalClubs'            => $totalClubs,
@@ -133,6 +147,9 @@ class DashboardController extends Controller
             'pendingProposalsCount' => \App\Models\Event::where('status', 'pending_approval')->where('advisor_approval_status', 'approved')->count(),
             'advisorApprovedEvents' => $advisorApprovedEvents,
             'advisorApprovedCount'  => \App\Models\Event::where('advisor_approval_status', 'approved')->count(),
+            'totalApprovedBudget'   => $totalApprovedBudget,
+            'totalReleasedBudget'   => $totalReleasedBudget,
+            'pendingReleaseCount'   => $pendingReleaseCount,
         ]);
     }
 

@@ -150,19 +150,21 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-sm btn-info">
-                                                    View
-                                                </a>
-                                                <?php if(!$isAdmin): ?>
-                                                    <a href="<?php echo e(route('events.budget.show', $event)); ?>" class="btn btn-sm btn-success" title="Budget">
-                                                        <i class="fas fa-money-bill-wave"></i>
+                                                <div class="d-flex gap-2">
+                                                    <a href="<?php echo e(route('events.show', $event)); ?>" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-eye"></i> View
                                                     </a>
-                                                    <?php if($event->status === 'draft'): ?>
-                                                        <a href="<?php echo e(route('events.edit', $event)); ?>" class="btn btn-sm btn-warning">
-                                                            Edit
+                                                    <?php if(!$isAdmin): ?>
+                                                        <a href="<?php echo e(route('events.budget.show', $event)); ?>" class="btn btn-sm btn-success" title="Budget">
+                                                            <i class="fas fa-money-bill-wave"></i> Budget
                                                         </a>
+                                                        <?php if($event->status === 'draft'): ?>
+                                                            <a href="<?php echo e(route('events.edit', $event)); ?>" class="btn btn-sm btn-warning">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                        <?php endif; ?>
                                                     <?php endif; ?>
-                                                <?php endif; ?>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

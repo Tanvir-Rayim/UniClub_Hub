@@ -102,6 +102,12 @@
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
+                            <a href="{{ route('admin.financial-summary') }}" class="btn btn-outline-dark w-100 py-2">
+                                <i class="fas fa-money-bill-wave me-2"></i>
+                                <span class="d-block small">Budget & Funds</span>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-6">
                             <a href="{{ route('profile.show') }}" class="btn btn-outline-warning w-100 py-2">
                                 <i class="fas fa-user me-2"></i>
                                 <span class="d-block small">My Profile</span>
@@ -159,6 +165,21 @@
                                     <td class="ps-4"><strong>Events</strong></td>
                                     <td><span class="badge bg-warning text-dark rounded-pill px-3">{{ $totalEvents }}</span></td>
                                     <td class="text-muted"><small>Total event proposals and approved events</small></td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4"><strong>Total Approved Budget</strong></td>
+                                    <td><span class="badge bg-dark rounded-pill px-3">${{ number_format($totalApprovedBudget, 2) }}</span></td>
+                                    <td class="text-muted"><small>Combined budget of all officially approved events</small></td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4"><strong>Total Released Funds</strong></td>
+                                    <td><span class="badge bg-success rounded-pill px-3">${{ number_format($totalReleasedBudget, 2) }}</span></td>
+                                    <td class="text-muted"><small>Funds already authorized by advisors for release</small></td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4"><strong>Pending Releases</strong></td>
+                                    <td><span class="badge bg-warning text-dark rounded-pill px-3">{{ $pendingReleaseCount }}</span></td>
+                                    <td class="text-muted"><small>Events awaiting advisor financial authorization</small></td>
                                 </tr>
                             </tbody>
                         </table>

@@ -97,6 +97,16 @@
                             </td>
                         </tr>
                         <tr>
+                            <td><strong>Financial Release:</strong></td>
+                            <td>
+                                @if ($event->financial_release_status)
+                                    <span class="badge bg-success">Authorized ({{ $event->financial_released_at->format('M d, Y') }})</span>
+                                @else
+                                    <span class="badge bg-secondary">Locked</span>
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
                             <td><strong>Submitted By:</strong></td>
                             <td>{{ $event->creator->name }}</td>
                         </tr>
@@ -272,6 +282,17 @@
                         </div>
                     </div>
                     </div>
+                    @endif
+ 
+                    @if ($isAdvisor && $event->status === 'approved' && !$event->financial_release_status)
+                        <hr>
+                        <h5 class="mb-3">Finance Management</h5>
+                        <form action="{{ route('events.budget.release', $event) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-hand-holding-usd me-1"></i> Release Event Funds
+                            </button>
+                        </form>
                     @endif
 
                     @if ($isAdmin && $event->status === 'pending_approval' && $event->advisor_approval_status === 'approved')

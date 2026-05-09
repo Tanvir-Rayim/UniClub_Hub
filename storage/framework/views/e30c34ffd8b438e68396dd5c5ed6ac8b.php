@@ -124,11 +124,17 @@
         <!-- Clubs Management Section -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center" style="background: #eff6ff; border-bottom: 2px solid #dbeafe;">
+                <div class="card-header py-3 d-flex flex-wrap justify-content-between align-items-center gap-3" style="background: #eff6ff; border-bottom: 2px solid #dbeafe;">
                     <h5 class="mb-0 text-dark fw-bold">
                         <i class="fas fa-users me-2 text-primary"></i>Your Clubs
                     </h5>
-                    <span class="badge bg-primary rounded-pill px-3"><?php echo e($clubs->count()); ?></span>
+                    <div class="ms-auto d-flex align-items-center gap-3">
+                        <div class="input-group input-group-sm shadow-sm" style="min-width: 250px;">
+                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-filter text-primary"></i></span>
+                            <input type="text" id="clubSearch" class="form-control border-start-0" placeholder="Filter clubs by name...">
+                        </div>
+                        <span class="badge bg-primary rounded-pill px-3"><?php echo e($clubs->count()); ?></span>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <?php if($clubs->count() > 0): ?>
@@ -422,6 +428,26 @@
         background-color: #f8f9fa;
     }
 </style>
+<?php $__env->startSection('scripts'); ?>
+<script>
+    document.getElementById('clubSearch').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('table tbody tr');
+        
+        rows.forEach(row => {
+            let clubNameElement = row.querySelector('td:first-child a');
+            if (clubNameElement) {
+                let clubName = clubNameElement.textContent.toLowerCase();
+                if (clubName.includes(filter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    });
+</script>
+<?php $__env->stopSection(); ?>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\ASUS\Documents\CSE470\UniClubHub\resources\views/dashboards/executive.blade.php ENDPATH**/ ?>

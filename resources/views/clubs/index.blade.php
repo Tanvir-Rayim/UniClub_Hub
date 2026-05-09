@@ -4,18 +4,34 @@
 
 @section('content')
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h2>Available Clubs</h2>
-        </div>
-        <div class="col-md-4 text-end">
-            @auth
-                @if (Auth::user()->hasRole('admin'))
-                    <a href="{{ route('clubs.create') }}" class="btn btn-primary">
-                        + Create New Club
-                    </a>
-                @endif
-            @endauth
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+                <div class="card-body p-4">
+                    <form action="{{ route('clubs.index') }}" method="GET" class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px;">
+                                    <i class="fas fa-search text-primary"></i>
+                                </span>
+                                <input type="text" name="search" class="form-control border-start-0 py-3" 
+                                       placeholder="Search for clubs by name..." value="{{ request('search') }}"
+                                       style="border-radius: 0 10px 10px 0; font-size: 1rem;">
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1 shadow-sm" style="border-radius: 10px;">
+                                Search Clubs
+                            </button>
+                            @if(request('search'))
+                                <a href="{{ route('clubs.index') }}" class="btn btn-outline-secondary btn-lg shadow-sm" style="border-radius: 10px;">
+                                    Clear
+                                </a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
