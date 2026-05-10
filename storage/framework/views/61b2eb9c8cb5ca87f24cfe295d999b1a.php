@@ -20,6 +20,46 @@
     </div>
 
     
+    <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background: #fff;">
+        <div class="card-body p-4">
+            <form action="<?php echo e(route('student.events.calendar')); ?>" method="GET" class="row g-3 align-items-end">
+                <div class="col-lg-4 col-md-12">
+                    <label class="form-label small fw-bold text-muted"><i class="fas fa-search me-1"></i> Search Events</label>
+                    <input type="text" name="search" class="form-control" placeholder="Search by title..." value="<?php echo e(request('search')); ?>" style="border-radius: 8px;">
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-bold text-muted"><i class="fas fa-users me-1"></i> Club</label>
+                    <select name="club_id" class="form-select" style="border-radius: 8px;">
+                        <option value="">All Clubs</option>
+                        <?php $__currentLoopData = $clubs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $club): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($club->id); ?>" <?php echo e(request('club_id') == $club->id ? 'selected' : ''); ?>>
+                                <?php echo e($club->name); ?>
+
+                            </option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-bold text-muted"><i class="fas fa-calendar-alt me-1"></i> Date</label>
+                    <input type="date" name="date" class="form-control" value="<?php echo e(request('date')); ?>" style="border-radius: 8px;">
+                </div>
+                <div class="col-lg-2 col-md-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold" style="border-radius: 8px; padding: 0.6rem;">
+                            Filter
+                        </button>
+                        <?php if(request()->anyFilled(['search', 'club_id', 'date'])): ?>
+                            <a href="<?php echo e(route('student.events.calendar')); ?>" class="btn btn-outline-secondary" style="border-radius: 8px; padding: 0.6rem;">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
     <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
             <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>

@@ -210,6 +210,18 @@
                         </form>
                     @endif
 
+                    @php
+                        $isExecutive = auth()->id() === $event->created_by;
+                        $isAdvisor = $event->club->faculty_advisor_id == auth()->id();
+                        $isAdmin = auth()->user()->hasRole('admin');
+                    @endphp
+
+                    @if($isExecutive || $isAdvisor || $isAdmin)
+                        <a href="{{ route('events.participants.pdf', $event) }}" class="btn btn-outline-dark w-100 mb-2">
+                            <i class="fas fa-file-pdf me-1"></i> Download Participant List
+                        </a>
+                    @endif
+
                     <a href="{{ route('events.index') }}" class="btn btn-outline-primary w-100 mb-4">
                         Back to My Proposals
                     </a>

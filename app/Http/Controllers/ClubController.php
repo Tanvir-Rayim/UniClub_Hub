@@ -65,14 +65,51 @@ class ClubController extends Controller
     // List all clubs
     public function index(Request $request)
     {
-        $query = Club::where('is_active', true);
+        $query = Club::where('is_active', true)->with('advisors');
 
+        // Search name and description
         if ($request->filled('search')) {
-            $query->where('name', 'LIKE', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+            });
         }
 
-        $clubs = $query->latest()->paginate(15);
-        return view('clubs.index', ['clubs' => $clubs]);
+        // Filter by advisor
+        if ($request->filled('advisor_id')) {
+            $query->where('faculty_advisor_id', $request->advisor_id);
+        }
+
+        // Sorting
+        $sort = $request->get('sort', 'latest');
+        
+        // Add member count for sorting
+        $query->withCount(['members' => function ($q) {
+            $q->where('status', 'approved');
+        }]);
+
+        switch ($sort) {
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'popularity':
+                $query->orderBy('members_count', 'desc');
+                break;
+            case 'latest':
+            default:
+                $query->latest();
+                break;
+        }
+
+        $clubs = $query->paginate(12)->withQueryString();
+        
+        $advisors = User::where('role', 'advisor')->get();
+
+        return view('clubs.index', [
+            'clubs' => $clubs,
+            'advisors' => $advisors
+        ]);
     }
 
     // Apply for membership

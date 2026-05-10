@@ -21,6 +21,45 @@
         </div>
     </div>
 
+    {{-- Search & Filter Section --}}
+    <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background: #fff;">
+        <div class="card-body p-4">
+            <form action="{{ route('student.events.calendar') }}" method="GET" class="row g-3 align-items-end">
+                <div class="col-lg-4 col-md-12">
+                    <label class="form-label small fw-bold text-muted"><i class="fas fa-search me-1"></i> Search Events</label>
+                    <input type="text" name="search" class="form-control" placeholder="Search by title..." value="{{ request('search') }}" style="border-radius: 8px;">
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-bold text-muted"><i class="fas fa-users me-1"></i> Club</label>
+                    <select name="club_id" class="form-select" style="border-radius: 8px;">
+                        <option value="">All Clubs</option>
+                        @foreach($clubs as $club)
+                            <option value="{{ $club->id }}" {{ request('club_id') == $club->id ? 'selected' : '' }}>
+                                {{ $club->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-bold text-muted"><i class="fas fa-calendar-alt me-1"></i> Date</label>
+                    <input type="date" name="date" class="form-control" value="{{ request('date') }}" style="border-radius: 8px;">
+                </div>
+                <div class="col-lg-2 col-md-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold" style="border-radius: 8px; padding: 0.6rem;">
+                            Filter
+                        </button>
+                        @if(request()->anyFilled(['search', 'club_id', 'date']))
+                            <a href="{{ route('student.events.calendar') }}" class="btn btn-outline-secondary" style="border-radius: 8px; padding: 0.6rem;">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{-- Alerts --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">

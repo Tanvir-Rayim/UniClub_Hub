@@ -6,26 +6,43 @@
 <div class="container">
     <div class="row mb-5">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; background: #fff;">
                 <div class="card-body p-4">
-                    <form action="{{ route('clubs.index') }}" method="GET" class="row g-3 align-items-center">
-                        <div class="col-md-8">
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px;">
-                                    <i class="fas fa-search text-primary"></i>
-                                </span>
-                                <input type="text" name="search" class="form-control border-start-0 py-3" 
-                                       placeholder="Search for clubs by name..." value="{{ request('search') }}"
-                                       style="border-radius: 0 10px 10px 0; font-size: 1rem;">
+                    <form action="{{ route('clubs.index') }}" method="GET" class="row g-3">
+                        <div class="col-lg-4 col-md-12">
+                            <label class="form-label small fw-bold text-muted">Search Clubs</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-primary"></i></span>
+                                <input type="text" name="search" class="form-control border-start-0" 
+                                       placeholder="Keyword (name, description...)" value="{{ request('search') }}">
                             </div>
                         </div>
-                        <div class="col-md-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1 shadow-sm" style="border-radius: 10px;">
-                                Search Clubs
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label small fw-bold text-muted">Advisor</label>
+                            <select name="advisor_id" class="form-select">
+                                <option value="">All Advisors</option>
+                                @foreach($advisors as $advisor)
+                                    <option value="{{ $advisor->id }}" {{ request('advisor_id') == $advisor->id ? 'selected' : '' }}>
+                                        {{ $advisor->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label small fw-bold text-muted">Sort By</label>
+                            <select name="sort" class="form-select">
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Recently Added</option>
+                                <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name (A-Z)</option>
+                                <option value="popularity" {{ request('sort') == 'popularity' ? 'selected' : '' }}>Most Members</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-12 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">
+                                Filter
                             </button>
-                            @if(request('search'))
-                                <a href="{{ route('clubs.index') }}" class="btn btn-outline-secondary btn-lg shadow-sm" style="border-radius: 10px;">
-                                    Clear
+                            @if(request()->anyFilled(['search', 'advisor_id', 'sort']))
+                                <a href="{{ route('clubs.index') }}" class="btn btn-outline-secondary shadow-sm">
+                                    <i class="fas fa-times"></i>
                                 </a>
                             @endif
                         </div>

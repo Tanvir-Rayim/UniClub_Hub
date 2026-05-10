@@ -141,9 +141,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/events/{event}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
     });
 
-    // Event Proposals (accessible by executives and advisors)
     Route::middleware('role:executive,advisor,admin')->group(function () {
         Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+        Route::get('/events/{event}/participants/pdf', [EventController::class, 'downloadParticipantsPDF'])->name('events.participants.pdf');
     });
 
     // Attendance marking (for all authenticated users)

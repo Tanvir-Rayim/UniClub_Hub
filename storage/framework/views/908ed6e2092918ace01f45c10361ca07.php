@@ -6,26 +6,44 @@
 <div class="container">
     <div class="row mb-5">
         <div class="col-md-12">
-            <div class="card border-0 shadow-sm" style="border-radius: 15px; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; background: #fff;">
                 <div class="card-body p-4">
-                    <form action="<?php echo e(route('clubs.index')); ?>" method="GET" class="row g-3 align-items-center">
-                        <div class="col-md-8">
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px;">
-                                    <i class="fas fa-search text-primary"></i>
-                                </span>
-                                <input type="text" name="search" class="form-control border-start-0 py-3" 
-                                       placeholder="Search for clubs by name..." value="<?php echo e(request('search')); ?>"
-                                       style="border-radius: 0 10px 10px 0; font-size: 1rem;">
+                    <form action="<?php echo e(route('clubs.index')); ?>" method="GET" class="row g-3">
+                        <div class="col-lg-4 col-md-12">
+                            <label class="form-label small fw-bold text-muted">Search Clubs</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-primary"></i></span>
+                                <input type="text" name="search" class="form-control border-start-0" 
+                                       placeholder="Keyword (name, description...)" value="<?php echo e(request('search')); ?>">
                             </div>
                         </div>
-                        <div class="col-md-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1 shadow-sm" style="border-radius: 10px;">
-                                Search Clubs
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label small fw-bold text-muted">Advisor</label>
+                            <select name="advisor_id" class="form-select">
+                                <option value="">All Advisors</option>
+                                <?php $__currentLoopData = $advisors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $advisor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($advisor->id); ?>" <?php echo e(request('advisor_id') == $advisor->id ? 'selected' : ''); ?>>
+                                        <?php echo e($advisor->name); ?>
+
+                                    </option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label small fw-bold text-muted">Sort By</label>
+                            <select name="sort" class="form-select">
+                                <option value="latest" <?php echo e(request('sort') == 'latest' ? 'selected' : ''); ?>>Recently Added</option>
+                                <option value="name" <?php echo e(request('sort') == 'name' ? 'selected' : ''); ?>>Name (A-Z)</option>
+                                <option value="popularity" <?php echo e(request('sort') == 'popularity' ? 'selected' : ''); ?>>Most Members</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-md-12 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">
+                                Filter
                             </button>
-                            <?php if(request('search')): ?>
-                                <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-outline-secondary btn-lg shadow-sm" style="border-radius: 10px;">
-                                    Clear
+                            <?php if(request()->anyFilled(['search', 'advisor_id', 'sort'])): ?>
+                                <a href="<?php echo e(route('clubs.index')); ?>" class="btn btn-outline-secondary shadow-sm">
+                                    <i class="fas fa-times"></i>
                                 </a>
                             <?php endif; ?>
                         </div>

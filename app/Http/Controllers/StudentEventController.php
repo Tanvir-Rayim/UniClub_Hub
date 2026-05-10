@@ -12,15 +12,28 @@ class StudentEventController extends Controller
     /**
      * Public upcoming events calendar — shows all advisor-approved future events.
      */
-    public function calendar()
+    public function calendar(Request $request)
     {
         $user = Auth::user();
 
-        $events = Event::with(['club', 'venue'])
+        $query = Event::with(['club', 'venue'])
             ->where('advisor_approval_status', 'approved')
-            ->where('proposed_date', '>=', now())
-            ->orderBy('proposed_date', 'asc')
-            ->get();
+            ->where('proposed_date', '>=', now());
+
+        // Search & Filtering
+        if ($request->filled('search')) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('club_id')) {
+            $query->where('club_id', $request->club_id);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('proposed_date', $request->date);
+        }
+
+        $events = $query->orderBy('proposed_date', 'asc')->get();
 
         // Get the IDs of events this student has already registered for
         $registeredEventIds = EventRegistration::where('user_id', $user->id)
@@ -31,6 +44,7 @@ class StudentEventController extends Controller
         return view('student.calendar', [
             'events'              => $events,
             'registeredEventIds'  => $registeredEventIds,
+            'clubs'               => \App\Models\Club::all(),
         ]);
     }
 
@@ -48,6 +62,14 @@ class StudentEventController extends Controller
 
         if ($event->proposed_date->isPast()) {
             return back()->with('error', 'Registration for this event has closed — the event date has passed.');
+        }
+
+        // Capacity check
+        if ($event->venue) {
+            $registrationCount = $event->registrations()->where('status', 'registered')->count();
+            if ($registrationCount >= $event->venue->capacity) {
+                return back()->with('error', 'Sorry, this event has reached its maximum capacity.');
+            }
         }
 
         // Prevent duplicate registration

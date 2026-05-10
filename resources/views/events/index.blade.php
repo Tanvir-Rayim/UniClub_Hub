@@ -37,27 +37,65 @@
         </div>
     @endif
 
+    {{-- Search & Filter Section --}}
+    <div class="card shadow-sm mb-4 border-0" style="background: #f8fafc;">
+        <div class="card-body">
+            <form action="{{ route('events.index') }}" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label class="small text-muted mb-1">Search Event Title</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-primary"></i></span>
+                        <input type="text" name="search" class="form-control border-start-0" placeholder="e.g. Workshop" value="{{ request('search') }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="small text-muted mb-1">Filter by Club</label>
+                    <select name="club_id" class="form-select">
+                        <option value="">All Clubs</option>
+                        @foreach($clubs as $club)
+                            <option value="{{ $club->id }}" {{ request('club_id') == $club->id ? 'selected' : '' }}>
+                                {{ $club->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="small text-muted mb-1">Filter by Date</label>
+                    <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+                </div>
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    @if(request()->anyFilled(['search', 'club_id', 'date']))
+                        <a href="{{ route('events.index') }}" class="btn btn-outline-secondary" title="Clear Filters">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{-- Admin: summary badges --}}
     @if($isAdmin)
     <div class="row g-3 mb-4">
         <div class="col-auto">
-            <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+            <span class="badge bg-warning text-dark fs-6 px-3 py-2 shadow-sm">
                 ⏳ Pending: {{ $events->where('status', 'pending_approval')->count() }}
             </span>
         </div>
         <div class="col-auto">
-            <span class="badge bg-success fs-6 px-3 py-2">
+            <span class="badge bg-success fs-6 px-3 py-2 shadow-sm">
                 ✅ Advisor Approved: {{ $events->where('advisor_approval_status', 'approved')->count() }}
             </span>
         </div>
         <div class="col-auto">
-            <span class="badge bg-danger fs-6 px-3 py-2">
+            <span class="badge bg-danger fs-6 px-3 py-2 shadow-sm">
                 ❌ Rejected: {{ $events->where('status', 'rejected')->count() }}
             </span>
         </div>
         <div class="col-auto">
-            <span class="badge bg-primary fs-6 px-3 py-2">
-                📅 Total: {{ $eventCount }}
+            <span class="badge bg-primary fs-6 px-3 py-2 shadow-sm">
+                📅 Total Found: {{ $events->count() }}
             </span>
         </div>
     </div>

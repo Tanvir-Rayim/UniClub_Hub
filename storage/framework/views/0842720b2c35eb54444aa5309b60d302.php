@@ -99,6 +99,16 @@
                             </td>
                         </tr>
                         <tr>
+                            <td><strong>Financial Release:</strong></td>
+                            <td>
+                                <?php if($event->financial_release_status): ?>
+                                    <span class="badge bg-success">Authorized (<?php echo e($event->financial_released_at->format('M d, Y')); ?>)</span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary">Locked</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><strong>Submitted By:</strong></td>
                             <td><?php echo e($event->creator->name); ?></td>
                         </tr>
@@ -202,6 +212,18 @@
                         </form>
                     <?php endif; ?>
 
+                    <?php
+                        $isExecutive = auth()->id() === $event->created_by;
+                        $isAdvisor = $event->club->faculty_advisor_id == auth()->id();
+                        $isAdmin = auth()->user()->hasRole('admin');
+                    ?>
+
+                    <?php if($isExecutive || $isAdvisor || $isAdmin): ?>
+                        <a href="<?php echo e(route('events.participants.pdf', $event)); ?>" class="btn btn-outline-dark w-100 mb-2">
+                            <i class="fas fa-file-pdf me-1"></i> Download Participant List
+                        </a>
+                    <?php endif; ?>
+
                     <a href="<?php echo e(route('events.index')); ?>" class="btn btn-outline-primary w-100 mb-4">
                         Back to My Proposals
                     </a>
@@ -274,6 +296,17 @@
                         </div>
                     </div>
                     </div>
+                    <?php endif; ?>
+ 
+                    <?php if($isAdvisor && $event->status === 'approved' && !$event->financial_release_status): ?>
+                        <hr>
+                        <h5 class="mb-3">Finance Management</h5>
+                        <form action="<?php echo e(route('events.budget.release', $event)); ?>" method="POST">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-hand-holding-usd me-1"></i> Release Event Funds
+                            </button>
+                        </form>
                     <?php endif; ?>
 
                     <?php if($isAdmin && $event->status === 'pending_approval' && $event->advisor_approval_status === 'approved'): ?>

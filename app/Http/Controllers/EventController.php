@@ -12,27 +12,40 @@ use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
+        $query = Event::with(['club', 'venue', 'creator']);
+
         if ($user->isAdmin()) {
-            // Admin sees ALL events across the entire system
-            $events = Event::with(['club', 'venue', 'creator'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+            // Admin sees ALL events
         } else {
             // Executive sees only events from their assigned clubs
             $assignedClubIds = $user->assignedClubs()->pluck('clubs.id');
-            $events = Event::whereIn('club_id', $assignedClubIds)
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $query->whereIn('club_id', $assignedClubIds);
         }
+
+        // Search & Filtering
+        if ($request->filled('search')) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('club_id')) {
+            $query->where('club_id', $request->club_id);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('proposed_date', $request->date);
+        }
+
+        $events = $query->orderBy('created_at', 'desc')->get();
 
         return view('events.index', [
             'events'     => $events,
             'eventCount' => $events->count(),
             'isAdmin'    => $user->isAdmin(),
+            'clubs'      => $user->isAdmin() ? Club::all() : $user->assignedClubs()->get(),
         ]);
     }
     public function create()
@@ -74,6 +87,19 @@ class EventController extends Controller
             if ($audience < $minCapacity || $audience > $maxCapacity) {
                 return back()->withInput()->withErrors([
                     'expected_audience' => "For the selected venue ({$venue->name}), the expected audience must be between {$minCapacity} and {$maxCapacity} (40% to 100% of total capacity)."
+                ]);
+            }
+
+            // Venue conflict check: Check if any approved or pending event already exists at this venue on this date
+            $proposedDate = \Carbon\Carbon::parse($request->proposed_date)->toDateString();
+            $conflict = Event::where('venue_id', $request->venue_id)
+                ->whereIn('status', ['approved', 'pending_approval'])
+                ->whereDate('proposed_date', $proposedDate)
+                ->exists();
+
+            if ($conflict) {
+                return back()->withInput()->withErrors([
+                    'venue_id' => 'This venue is already booked for another event on the selected date.'
                 ]);
             }
         }
@@ -189,6 +215,20 @@ class EventController extends Controller
             if ($audience < $minCapacity || $audience > $maxCapacity) {
                 return back()->withInput()->withErrors([
                     'expected_audience' => "For the selected venue ({$venue->name}), the expected audience must be between {$minCapacity} and {$maxCapacity} (40% to 100% of total capacity)."
+                ]);
+            }
+
+            // Venue conflict check
+            $proposedDate = \Carbon\Carbon::parse($request->proposed_date)->toDateString();
+            $conflict = Event::where('venue_id', $request->venue_id)
+                ->where('id', '!=', $event->id)
+                ->whereIn('status', ['approved', 'pending_approval'])
+                ->whereDate('proposed_date', $proposedDate)
+                ->exists();
+
+            if ($conflict) {
+                return back()->withInput()->withErrors([
+                    'venue_id' => 'This venue is already booked for another event on the selected date.'
                 ]);
             }
         }
@@ -310,5 +350,35 @@ class EventController extends Controller
         ]);
 
         return back()->with('success', 'Event proposal has been rejected.');
+    }
+
+    /**
+     * Download the list of registered participants as a PDF.
+     */
+    public function downloadParticipantsPDF(Event $event)
+    {
+        $user = Auth::user();
+        
+        // Authorization check
+        $isCreator = $event->created_by === $user->id;
+        $isAdvisor = $event->club->faculty_advisor_id === $user->id;
+        $isAdmin = $user->isAdmin();
+        
+        if (!($isCreator || $isAdvisor || $isAdmin)) {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $participants = $event->registrations()
+            ->where('status', 'registered')
+            ->with('user')
+            ->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('events.participants-pdf', [
+            'event' => $event,
+            'participants' => $participants,
+            'generatedAt' => now()
+        ]);
+
+        return $pdf->download($event->title . '_participants_' . now()->format('Y-m-d') . '.pdf');
     }
 }
