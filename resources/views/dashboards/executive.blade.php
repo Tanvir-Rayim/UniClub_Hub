@@ -107,7 +107,7 @@
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
-                            <a href="{{ route('clubs.show', $clubs->first()) }}" class="btn btn-outline-dark w-100 py-2" @if($clubs->count() === 0) disabled @endif>
+                            <a href="{{ $clubs->count() > 0 ? route('clubs.show', $clubs->first()) : '#' }}" class="btn btn-outline-dark w-100 py-2" @if($clubs->count() === 0) disabled @endif>
                                 <i class="fas fa-cog me-2"></i>
                                 <span class="d-block small">Settings</span>
                             </a>

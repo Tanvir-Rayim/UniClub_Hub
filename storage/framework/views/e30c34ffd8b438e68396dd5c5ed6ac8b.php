@@ -108,7 +108,7 @@
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
-                            <a href="<?php echo e(route('clubs.show', $clubs->first())); ?>" class="btn btn-outline-dark w-100 py-2" <?php if($clubs->count() === 0): ?> disabled <?php endif; ?>>
+                            <a href="<?php echo e($clubs->count() > 0 ? route('clubs.show', $clubs->first()) : '#'); ?>" class="btn btn-outline-dark w-100 py-2" <?php if($clubs->count() === 0): ?> disabled <?php endif; ?>>
                                 <i class="fas fa-cog me-2"></i>
                                 <span class="d-block small">Settings</span>
                             </a>
@@ -216,6 +216,7 @@
                                         <th>Club</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                        <th>Financial</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -243,6 +244,17 @@
                                                     <span class="badge bg-danger">✗ Rejected</span>
                                                 <?php else: ?>
                                                     <span class="badge bg-secondary"><?php echo e(ucfirst($event->status)); ?></span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php if($event->financial_release_status): ?>
+                                                    <span class="badge bg-success" title="Released at <?php echo e($event->financial_released_at->format('M d, Y')); ?>">
+                                                        <i class="fas fa-money-check-alt me-1"></i> Released
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-light text-muted border">
+                                                        <i class="fas fa-lock me-1"></i> Locked
+                                                    </span>
                                                 <?php endif; ?>
                                             </td>
                                             <td class="text-center">

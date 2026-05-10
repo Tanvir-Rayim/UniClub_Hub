@@ -59,7 +59,7 @@ class EventController extends Controller
             'budget' => 'nullable|numeric|min:0',
             'expected_audience' => 'nullable|integer|min:1',
         ]);
-
+ 
         // Venue capacity validation
         if ($request->filled('venue_id')) {
             $venue = Venue::findOrFail($request->venue_id);
