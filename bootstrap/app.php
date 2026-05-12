@@ -19,4 +19,13 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+/*
+|--------------------------------------------------------------------------
+| Vercel Serverless /tmp Storage
+|--------------------------------------------------------------------------
+*/
+if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'production') {
+    $app->useStoragePath($_ENV['APP_STORAGE'] ?? '/tmp/storage');
+}
+
 return $app;
